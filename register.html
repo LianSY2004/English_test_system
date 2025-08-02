@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>註冊 - SpeakEnglish</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f0f0;
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding-top: 100px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 80px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        height: 100%;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        width: 200px;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 40px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .nav-menu a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-menu a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 50%;
+        background: #3498db;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+      }
+
+      .nav-menu a:hover::after {
+        width: 100%;
+      }
+
+      .nav-menu a:hover {
+        color: #3498db;
+      }
+
+      .nav-actions {
+        width: 200px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .cta-nav {
+        background: #3498db;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        transform: translateY(0);
+      }
+
+      .cta-nav:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+      }
+
+      /* 註冊表單樣式 */
+      .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 100px);
+        padding: 40px 20px;
+      }
+
+      .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 50px 40px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        width: 100%;
+        max-width: 500px;
+        animation: slideUp 0.8s ease-out;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .register-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #3498db;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .register-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+
+      .register-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+      }
+
+      /* 訊息顯示 */
+      .message {
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        font-weight: 500;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .message.success {
+        background: rgba(46, 204, 113, 0.1);
+        border: 2px solid #2ecc71;
+        color: #27ae60;
+      }
+
+      .message.error {
+        background: rgba(231, 76, 60, 0.1);
+        border: 2px solid #e74c3c;
+        color: #c0392b;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 0.95rem;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e1e5e9;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        background: white;
+        transform: translateY(-1px);
+      }
+
+      .form-control::placeholder {
+        color: #999;
+        font-style: italic;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary {
+        background: #3498db;
+        color: white;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        transform: translateY(0);
+      }
+
+      .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+      }
+
+      .login-link {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 1rem;
+        color: #666;
+      }
+
+      .login-link a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .login-link a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background: #3498db;
+        transition: width 0.3s ease;
+      }
+
+      .login-link a:hover::after {
+        width: 100%;
+      }
+
+      .login-link a:hover {
+        color: #2980b9;
+      }
+
+      /* 響應式設計 */
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none;
+        }
+
+        .logo,
+        .nav-actions {
+          width: auto;
+        }
+
+        .register-card {
+          margin: 20px;
+          padding: 30px 25px;
+        }
+
+        .register-title {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <div class="logo">SpeakEnglish</div>
+        <div class="nav-menu">
+          <a href="{{ url_for('feature') }}">功能</a>
+          <a href="{{ url_for('contact') }}">聯絡我們</a>
+        </div>
+        <div class="nav-actions">
+          <form action="/" method="GET">
+            <button class="cta-nav">回首頁</button>
+          </form>
+        </div>
+      </nav>
+    </header>
+
+    <div class="register-container">
+      <div class="register-card">
+        <h1 class="register-title">加入我們</h1>
+        <p class="register-subtitle">
+          創建您的 SpeakEnglish 帳戶，開始您的英語學習之旅
+        </p>
+
+        <!-- 顯示訊息 -->
+        {% if msg %}
+        <div
+          class="message {% if '成功' in msg %}success{% else %}error{% endif %}"
+        >
+          {{ msg }}
+        </div>
+        {% endif %}
+
+        <form action="/register" method="POST">
+          <div class="form-group">
+            <label for="username">用戶名</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-control"
+              placeholder="請輸入用戶名（僅限字母和數字）"
+              value="{{ request.form.username if request.form.username }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">電子郵件</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              placeholder="請輸入您的電子郵件"
+              value="{{ request.form.email if request.form.email }}"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">密碼</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              placeholder="請輸入您的密碼"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary">立即註冊</button>
+        </form>
+
+        <div class="login-link">
+          已經有帳戶了？ <a href="/login">立即登入</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

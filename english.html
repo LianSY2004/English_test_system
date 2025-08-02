@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>英文問答評分系統</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+        padding-top: 80px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 70px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        height: 100%;
+      }
+
+      .logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        flex: 1;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 40px;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .nav-menu a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-menu a:hover {
+        color: #3498db;
+      }
+
+      /* 添加一個空的 div 來平衡佈局 */
+      .nav-spacer {
+        flex: 1;
+      }
+
+      .main-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h2 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      /* 題目容器改為 flex 佈局 */
+      .question-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+        align-items: flex-start;
+      }
+
+      .question-box {
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+        flex: 1;
+        min-height: 100px;
+        box-sizing: border-box;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+      }
+
+      .question-box p {
+        margin: 0;
+        text-align: left;
+      }
+
+      /* 中文翻譯區域 */
+      .translation-area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .translation-toggle {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s;
+        white-space: nowrap;
+      }
+
+      .translation-toggle:hover {
+        background-color: #2980b9;
+      }
+
+      .translation-box {
+        background-color: #e8f4fd;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+        min-width: 200px;
+        max-width: 300px;
+        display: none;
+      }
+
+      .translation-box.show {
+        display: block;
+      }
+
+      .translation-box p {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .answer-section {
+        margin-bottom: 25px;
+      }
+      .answer-label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+        text-align: left;
+      }
+      textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 12px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+        font-size: 16px;
+      }
+      .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      .result-container {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        text-align: left;
+      }
+      pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+      }
+      .microphone-status {
+        margin-top: 15px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+      }
+      .mic-indicator {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #ccc;
+        display: inline-block;
+        transition: background-color 0.3s;
+      }
+      .mic-indicator.connected {
+        background-color: #27ae60;
+      }
+      .mic-indicator.error {
+        background-color: #e74c3c;
+      }
+      #mic-status {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+      }
+      .mic-icon {
+        font-size: 18px;
+        margin-right: 5px;
+      }
+
+      /* 響應式設計 */
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none; /* 在小螢幕隱藏導航選單 */
+        }
+
+        .nav-spacer {
+          display: none; /* 在小螢幕隱藏間距 */
+        }
+
+        body {
+          padding-top: 60px; /* 小螢幕時減少頂部間距 */
+        }
+
+        header {
+          height: 60px;
+        }
+
+        /* 手機版改為垂直佈局 */
+        .question-container {
+          flex-direction: column;
+        }
+
+        .translation-area {
+          align-items: flex-start;
+        }
+
+        .translation-box {
+          min-width: auto;
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <div class="logo">SpeakEnglish</div>
+        <div class="nav-menu">
+          <a href="{{ url_for('feature') }}">功能</a>
+          <a href="{{ url_for('contact') }}">聯絡我們</a>
+        </div>
+        <div class="nav-spacer"></div>
+      </nav>
+    </header>
+
+    <div class="main-container">
+      <h2>請回答下列問題：</h2>
+
+      <div class="question-container">
+        <div class="question-box">
+          <p id="question-display"><strong>{{ question }}</strong></p>
+        </div>
+
+        <div class="translation-area">
+          <button class="translation-toggle" onclick="toggleTranslation()">
+            <span id="toggle-text">顯示中文</span>
+          </button>
+          <div class="translation-box" id="translation-box">
+            <p id="translation-text">{{ chinese_translation }}</p>
+          </div>
+        </div>
+      </div>
+
+      <form method="POST" id="qa-form">
+        <div class="answer-section">
+          <label class="answer-label">你的回答：</label>
+          <textarea name="user_answer" id="user-answer"></textarea>
+
+          <!-- 錄音控制按鈕 -->
+          <button
+            type="button"
+            id="rec-btn"
+            style="margin-top: 8px"
+            onclick="AndroidNative.startVoice()"
+          >
+            🎤 開始錄音
+          </button>
+          <span id="rec-hint" style="margin-left: 8px; color: #888"></span>
+
+          <!-- 麥克風狀態檢測區域（原本功能保留） -->
+          <div class="microphone-status">
+            <span class="mic-icon">🎤</span>
+            <div id="mic-indicator" class="mic-indicator"></div>
+            <span id="mic-status">檢測麥克風中...</span>
+          </div>
+        </div>
+
+        <div class="button-group">
+          {% if show_next %}
+          <button type="submit" name="action" value="next">下一題</button>
+          {% endif %} {% if show_end %}
+          <button type="submit" name="action" value="finish">完成測驗</button>
+          {% endif %}
+        </div>
+      </form>
+
+      {% if result %}
+      <div class="result-container">
+        <h3>評分結果：</h3>
+        <pre>{{ result }}</pre>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- 原生麥克風檢測腳本 -->
+    {{ microphone_script|safe }}
+
+    <!-- 中文翻譯切換功能 -->
+    <script>
+      function toggleTranslation() {
+        const box = document.getElementById("translation-box");
+        const toggleText = document.getElementById("toggle-text");
+
+        if (box.classList.contains("show")) {
+          box.classList.remove("show");
+          toggleText.textContent = "顯示中文";
+        } else {
+          box.classList.add("show");
+          toggleText.textContent = "隱藏中文";
+        }
+      }
+    </script>
+
+    <!-- Web Speech API：即時語音轉文字 -->
+    <script>
+      (() => {
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          document.getElementById("rec-btn").style.display = "none";
+          document.getElementById("rec-hint").textContent =
+            "瀏覽器不支援語音輸入";
+          return;
+        }
+
+        const recog = new SpeechRecognition();
+        recog.lang = "en-US"; // 改成 "zh-TW" 可辨中文
+        recog.interimResults = true; // 即時結果
+        recog.continuous = false; // 停頓即 onend
+
+        const btn = document.getElementById("rec-btn");
+        const hint = document.getElementById("rec-hint");
+        const textarea = document.getElementById("user-answer");
+
+        let listening = false;
+
+        btn.addEventListener("click", () => {
+          listening ? recog.stop() : recog.start();
+        });
+
+        recog.onstart = () => {
+          listening = true;
+          btn.textContent = "⏹ 停止錄音";
+          hint.textContent = "錄音中… 說完再按一次";
+        };
+
+        recog.onresult = (e) => {
+          let text = "";
+          for (let i = 0; i < e.results.length; ++i) {
+            text += e.results[i][0].transcript;
+          }
+          textarea.value = text.trim();
+          if (e.results[e.results.length - 1].isFinal) {
+            hint.textContent = "已填入文字，可編輯後送出";
+          }
+        };
+
+        recog.onend = () => {
+          listening = false;
+          btn.textContent = "🎤 開始錄音";
+          // 若 textarea 已有內容則保留提示
+          if (!textarea.value.trim()) hint.textContent = "";
+        };
+
+        recog.onerror = (e) => {
+          listening = false;
+          btn.textContent = "🎤 開始錄音";
+          hint.textContent = "語音辨識錯誤：" + e.error;
+          console.error(e);
+        };
+      })();
+    </script>
+  </body>
+</html>
