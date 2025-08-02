@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SpeakEnglish - 英文口說訓練</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+        padding-top: 80px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 70px;
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        height: 100%;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        flex: 1;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 40px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .nav-menu a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-menu a:hover {
+        color: #3498db;
+      }
+
+      .nav-actions {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 15px;
+      }
+
+      /* User Menu Styles */
+      .user-menu {
+        position: relative;
+        display: inline-block;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #3498db;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+      }
+
+      .user-avatar:hover {
+        background: #2980b9;
+        transform: scale(1.05);
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        min-width: 150px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1001;
+      }
+
+      .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .dropdown-item {
+        display: block;
+        padding: 12px 20px;
+        text-decoration: none;
+        color: #333;
+        transition: background 0.3s;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .dropdown-item:last-child {
+        border-bottom: none;
+      }
+
+      .dropdown-item:hover {
+        background: #f8f9fa;
+      }
+
+      .dropdown-item.logout {
+        color: #e74c3c;
+      }
+
+      .dropdown-item.logout:hover {
+        background: #fee;
+      }
+
+      .cta-nav {
+        background: #e74c3c;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s;
+      }
+
+      .cta-nav:hover {
+        background: #2980b9;
+      }
+
+      .hero {
+        padding: 120px 0 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
+      }
+
+      .hero p {
+        font-size: 1.3rem;
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        opacity: 0.9;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary {
+        background: #e74c3c;
+        color: white;
+        padding: 15px 35px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-primary:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+        padding: 13px 35px;
+        border-radius: 5px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-secondary:hover {
+        background: white;
+        color: #333;
+      }
+
+      .stats {
+        padding: 60px 0;
+        background: white;
+      }
+
+      .history-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background: #3498db;
+        color: white;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .history-date-header,
+      .history-score-header {
+        font-size: 1rem;
+      }
+
+      .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .history-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background: white;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+        transition: transform 0.2s;
+      }
+
+      .history-item:hover {
+        transform: translateX(5px);
+      }
+
+      .history-date {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .history-score {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .no-history {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+        padding: 40px 20px;
+      }
+
+      .features {
+        padding: 100px 0;
+        background: #f8f9fa;
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #2c3e50;
+      }
+
+      .section-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 60px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: #3498db;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 25px;
+      }
+
+      .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #2c3e50;
+      }
+
+      .feature-desc {
+        color: #666;
+        line-height: 1.7;
+      }
+
+      .testimonials {
+        padding: 100px 0;
+        background: white;
+      }
+
+      .testimonial-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+      }
+
+      .testimonial-card {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        border-left: 4px solid #3498db;
+      }
+
+      .testimonial-text {
+        font-style: italic;
+        margin-bottom: 20px;
+        color: #555;
+      }
+
+      .testimonial-author {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      .pricing {
+        padding: 100px 0;
+        background: #f8f9fa;
+      }
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .pricing-card {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+      }
+
+      .pricing-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .pricing-card.featured {
+        border: 3px solid #3498db;
+        transform: scale(1.05);
+      }
+
+      .pricing-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #2c3e50;
+      }
+
+      .pricing-price {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #3498db;
+        margin-bottom: 20px;
+      }
+
+      .pricing-features {
+        list-style: none;
+        margin-bottom: 30px;
+      }
+
+      .pricing-features li {
+        padding: 5px 0;
+        color: #666;
+      }
+
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none;
+        }
+
+        .hero h1 {
+          font-size: 2.5rem;
+        }
+
+        .hero-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .history-container {
+          margin: 0 10px;
+          padding: 20px;
+        }
+
+        .history-header,
+        .history-item {
+          padding: 12px 15px;
+        }
+
+        .history-date-header,
+        .history-score-header {
+          font-size: 0.9rem;
+        }
+
+        .history-date {
+          font-size: 0.8rem;
+        }
+
+        .history-score {
+          font-size: 1rem;
+        }
+
+        .nav-actions {
+          gap: 10px;
+        }
+
+        .user-avatar {
+          width: 35px;
+          height: 35px;
+          font-size: 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <div class="logo">SpeakEnglish</div>
+        <div class="nav-menu">
+          <a href="{{ url_for('feature') }}">功能</a>
+          <a href="{{ url_for('contact') }}">聯絡我們</a>
+        </div>
+        <div class="nav-actions">
+          {% if session.loggedin %}
+          <div class="user-menu">
+            <div class="user-avatar" onclick="toggleDropdown()">
+              {{ session.email[0].upper() }}
+            </div>
+            <div class="dropdown-menu" id="userDropdown">
+              <a href="{{ url_for('profile') }}" class="dropdown-item"
+                >個人資料</a
+              >
+              <a href="{{ url_for('logout') }}" class="dropdown-item logout"
+                >登出</a
+              >
+            </div>
+          </div>
+          <a href="{{ url_for('voice_select') }}" class="cta-nav">開始測驗</a>
+          {% else %}
+          <a href="{{ url_for('login') }}" class="cta-nav">開始測驗</a>
+          {% endif %}
+        </div>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <h1>提升英文口說能力</h1>
+        <p>為學生設計的AI口說訓練系統，幫助你更有自信地使用英文溝通</p>
+        <div class="hero-buttons">
+          {% if session.loggedin %}
+          <a href="{{ url_for('voice_select') }}" class="btn-primary"
+            >開始測驗</a
+          >
+          {% else %}
+          <a href="{{ url_for('login') }}" class="btn-primary">開始測驗</a>
+          {% endif %}
+          <a href="{{ url_for('example') }}" class="btn-secondary">觀看示範</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="container">
+        <div class="section-title">歷史紀錄</div>
+        <div class="history-container">
+          {% if recent_records %}
+          <div class="history-header">
+            <span class="history-date-header">測驗時間</span>
+            <span class="history-score-header">測驗平均分數(滿分5分)</span>
+          </div>
+          <div class="history-list">
+            {% for record in recent_records %}
+            <div class="history-item">
+              <span class="history-date">{{ record.date }}</span>
+              <span class="history-score"
+                >{{ "%.1f"|format(record.score) }}分</span
+              >
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="no-history">暫無測驗記錄</div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // 使用者登入圖示下拉選單(顯示個人資料/登出)
+      function toggleDropdown() {
+        const dropdown = document.getElementById("userDropdown");
+        dropdown.classList.toggle("show");
+      }
+
+      document.addEventListener("click", function (event) {
+        const userMenu = document.querySelector(".user-menu");
+        const dropdown = document.getElementById("userDropdown");
+
+        if (!userMenu.contains(event.target)) {
+          dropdown.classList.remove("show");
+        }
+      });
+    </script>
+  </body>
+</html>
