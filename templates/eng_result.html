@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>作答總結</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+        padding-top: 120px; /* 增加 padding-top 避免內容被切到 */
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 80px; /* 增加 header 高度 */
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0; /* 增加 padding */
+        height: 100%;
+      }
+
+      .logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        flex: 0 0 200px; /* 固定寬度 */
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 40px;
+        flex: 1; /* 佔據中間空間 */
+        justify-content: center; /* 置中對齊 */
+        position: absolute; /* 使用絕對定位 */
+        left: 50%; /* 移動到頁面中心 */
+        transform: translateX(-50%); /* 精確置中 */
+      }
+
+      .nav-menu a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: color 0.3s;
+      }
+
+      .nav-menu a:hover {
+        color: #3498db;
+      }
+
+      .nav-actions {
+        width: 200px; /* 固定寬度與 logo 相同 */
+        display: flex;
+        justify-content: flex-end; /* 右對齊 */
+        gap: 10px;
+      }
+
+      /* User Menu Styles */
+      .user-menu {
+        position: relative;
+        display: inline-block;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #3498db;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+      }
+
+      .user-avatar:hover {
+        background: #2980b9;
+        transform: scale(1.05);
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 50px;
+        right: 0;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        min-width: 150px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1001;
+      }
+
+      .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .dropdown-item {
+        display: block;
+        padding: 12px 20px;
+        text-decoration: none;
+        color: #333;
+        transition: background 0.3s;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .dropdown-item:last-child {
+        border-bottom: none;
+      }
+
+      .dropdown-item:hover {
+        background: #f8f9fa;
+      }
+
+      .dropdown-item.logout {
+        color: #e74c3c;
+      }
+
+      .dropdown-item.logout:hover {
+        background: #fee;
+      }
+
+      .cta-nav {
+        background: #3498db;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        transform: translateY(0);
+      }
+
+      .cta-nav:hover {
+        background: #e74c3c;
+      }
+
+      .main-content {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: auto;
+        background-color: #f9f9f9;
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      .score-info {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 30px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .record {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .question,
+      .answer,
+      .reference,
+      .result {
+        margin-top: 10px;
+        margin-bottom: 15px;
+      }
+      .content-box {
+        background-color: #f4f4f4;
+        padding: 16px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 5px;
+      }
+      h3 {
+        color: #444;
+        font-size: 16px;
+        margin-bottom: 5px;
+        display: block;
+      }
+      pre {
+        background-color: #f4f4f4;
+        padding: 16px;
+        border-radius: 5px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .center {
+        text-align: center;
+        margin-top: 30px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .hidden {
+        display: none;
+      }
+      .overall-evaluation {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: 20px 0 30px 0;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      .records-title {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <div class="logo">SpeakEnglish</div>
+        <div class="nav-menu">
+          <a href="{{ url_for('feature') }}">功能</a>
+          <a href="{{ url_for('contact') }}">聯絡我們</a>
+        </div>
+         <div class="nav-actions">
+          {% if session.loggedin %}
+          <div class="user-menu">
+            <div class="user-avatar" onclick="toggleDropdown()">
+              {{ session.email[0].upper() }}
+            </div>
+            <div class="dropdown-menu" id="userDropdown">
+              <a href="{{ url_for('profile') }}" class="dropdown-item"
+                >個人資料</a
+              >
+              <a href="{{ url_for('logout') }}" class="dropdown-item logout"
+                >登出</a
+              >
+            </div>
+          </div>
+          {% else %}
+          <a href="{{ url_for('login') }}" class="cta-nav">登入</a>
+          {% endif %}
+        <div class="nav-actions">
+          <form action="/" method="GET">
+            <button class="cta-nav">回首頁</button>
+          </form>
+        </div>
+      </nav>
+    </header>
+
+    <div class="main-content">
+      <h2>作答總結</h2>
+      <div class="score-info">
+        <strong>平均分數：</strong>{{ avg_score | round(2) }} / 5
+      </div>
+
+      <div class="overall-evaluation">
+        <h3>綜合評語：</h3>
+        <div class="content-box">{{ overall_evaluation }}</div>
+      </div>
+      <div class="center" style="margin-top: 10px">
+        <h4>語音講評播放：</h4>
+        <audio controls>
+          <source
+            src="{{ url_for('static', filename='output.wav') }}"
+            type="audio/wav"
+          />
+          你的瀏覽器不支援語音播放。
+        </audio>
+      </div>
+
+      <h3 class="records-title">各題表現</h3>
+
+      {% for r in records %}
+      <div class="record">
+        <div class="question">
+          <h3>題目：</h3>
+          <div class="content-box">{{ r.question }}</div>
+        </div>
+
+        <div class="answer">
+          <h3>你的回答：</h3>
+          <div class="content-box">{{ r.answer }}</div>
+        </div>
+
+        <div class="result">
+          <h3>評分結果：</h3>
+          <div class="content-box">{{ r.result }}</div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="center">
+        <form action="/" method="GET">
+          <button type="submit">回首頁</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      // 使用者登入圖示下拉選單(顯示個人資料/登出)
+      function toggleDropdown() {
+        const dropdown = document.getElementById("userDropdown");
+        dropdown.classList.toggle("show");
+      }
+
+      document.addEventListener("click", function (event) {
+        const userMenu = document.querySelector(".user-menu");
+        const dropdown = document.getElementById("userDropdown");
+
+        if (userMenu && !userMenu.contains(event.target)) {
+          dropdown.classList.remove("show");
+        }
+      });
+    </script>
+  </body>
+</html>

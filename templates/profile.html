@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>個人資料 - SpeakEnglish</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f0f0f0;
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+        padding-top: 100px;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 80px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+        height: 100%;
+        position: relative;
+      }
+
+      .logo {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        width: 200px;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 40px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .nav-menu a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .nav-menu a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 50%;
+        background: #3498db;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+      }
+
+      .nav-menu a:hover::after {
+        width: 100%;
+      }
+
+      .nav-menu a:hover {
+        color: #3498db;
+      }
+
+      .nav-actions {
+        width: 200px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .cta-nav {
+        background: #3498db;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        transform: translateY(0);
+        font-size: 0.9rem;
+      }
+
+      .cta-nav:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+      }
+
+      .logout-nav {
+        background: #e74c3c;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+      }
+
+      .logout-nav:hover {
+        background: #c0392b;
+        box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+      }
+
+      /* 個人資料內容 */
+      .profile-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .profile-header {
+        text-align: center;
+        margin-bottom: 40px;
+        animation: slideUp 0.8s ease-out;
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 3rem;
+        color: white;
+        font-weight: bold;
+        animation: pulse 2s infinite;
+        box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .profile-name {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+
+      .profile-welcome {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 30px;
+      }
+
+      .profile-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+        animation: slideUp 0.8s ease-out 0.2s both;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .profile-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #3498db;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-title::before {
+        content: "👤";
+        font-size: 1.2rem;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .info-label {
+        font-weight: 600;
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .info-value {
+        font-size: 1.1rem;
+        color: #2c3e50;
+        font-weight: 500;
+        padding: 12px 16px;
+        background: rgba(52, 152, 219, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+      }
+
+      /* 密碼項目特殊樣式 */
+      .password-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .password-value {
+        flex: 1;
+        font-size: 1.1rem;
+        color: #2c3e50;
+        font-weight: 500;
+        padding: 12px 16px;
+        background: rgba(52, 152, 219, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+      }
+
+      .change-password-btn {
+        background: #f39c12;
+        color: white;
+        border: none;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+        white-space: nowrap;
+        height: 47px; /* 和 info-value 一樣的高度 */
+      }
+
+      .change-password-btn:hover {
+        background: #e67e22;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+      }
+
+      /* 彈出框樣式 */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        transform: scale(0.9);
+        animation: modalSlideIn 0.3s ease-out forwards;
+        position: relative;
+      }
+
+      @keyframes modalSlideIn {
+        to {
+          transform: scale(1);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #eee;
+      }
+
+      .modal-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+        padding: 5px;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .close-btn:hover {
+        background: #f1f1f1;
+        color: #333;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e1e1e1;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #3498db;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background: #3498db;
+        color: white;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+      }
+
+      .btn-secondary {
+        background: #95a5a6;
+        color: white;
+        box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+      }
+
+      .btn-secondary:hover {
+        background: #7f8c8d;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+      }
+
+      .actions-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: slideUp 0.8s ease-out 0.4s both;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .actions-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #3498db, #e74c3c);
+      }
+
+      .actions-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .action-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .btn-success {
+        background: #2ecc71;
+        color: white;
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+      }
+
+      .btn-success:hover {
+        background: #27ae60;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+      }
+
+      .btn-warning {
+        background: #f39c12;
+        color: white;
+        box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+      }
+
+      .btn-warning:hover {
+        background: #e67e22;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+      }
+
+      .btn-danger {
+        background: #e74c3c;
+        color: white;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+      }
+
+      .btn-danger:hover {
+        background: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+      }
+
+      .stats-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 30px;
+        animation: slideUp 0.8s ease-out 0.3s both;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stats-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #2ecc71, #f39c12);
+      }
+
+      .stats-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .stats-title::before {
+        content: "📊";
+        font-size: 1.2rem;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 20px;
+      }
+
+      .stat-item {
+        text-align: center;
+        padding: 20px;
+        background: rgba(52, 152, 219, 0.05);
+        border-radius: 12px;
+        border: 2px solid rgba(52, 152, 219, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .stat-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.2);
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #3498db;
+        display: block;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      /* 響應式設計 */
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none;
+        }
+
+        .logo,
+        .nav-actions {
+          width: auto;
+        }
+
+        .nav-actions {
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .cta-nav {
+          padding: 8px 15px;
+          font-size: 0.8rem;
+        }
+
+        .profile-card,
+        .actions-card,
+        .stats-card {
+          margin: 20px;
+          padding: 25px;
+        }
+
+        .profile-name {
+          font-size: 2rem;
+        }
+
+        .action-buttons {
+          grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .modal {
+          width: 95%;
+          padding: 20px;
+        }
+
+        .password-container {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+        }
+
+        .change-password-btn {
+          height: auto;
+          padding: 10px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <div class="logo">SpeakEnglish</div>
+        <div class="nav-menu">
+          <a href="{{ url_for('feature') }}">功能</a>
+          <a href="{{ url_for('contact') }}">聯絡我們</a>
+        </div>
+        <div class="nav-actions">
+          <form action="/" method="GET" style="display: inline">
+            <button class="cta-nav">回首頁</button>
+          </form>
+          <a href="/logout" class="cta-nav logout-nav">登出</a>
+        </div>
+      </nav>
+    </header>
+
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-avatar">{{ account.username[0].upper() }}</div>
+        <h1 class="profile-name">{{ account.username }}</h1>
+        <p class="profile-welcome">歡迎回到 SpeakEnglish！</p>
+      </div>
+
+      <div class="stats-card">
+        <h2 class="stats-title">學習統計</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-number">{{ account.id }}</span>
+            <div class="stat-label">會員編號</div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number"
+              >{{ account.login_count if account.login_count else 0 }}</span
+            >
+            <div class="stat-label">登入次數</div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number"
+              >{{ account.practice_count if account.practice_count else 0
+              }}</span
+            >
+            <div class="stat-label">練習次數</div>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number"
+              >{{ account.study_hours if account.study_hours else 0 }}</span
+            >
+            <div class="stat-label">學習時數</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <h2 class="card-title">帳戶資訊</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label">用戶名</div>
+            <div class="info-value">{{ account.username }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">電子郵件</div>
+            <div class="info-value">{{ account.email }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">會員編號</div>
+            <div class="info-value">#{{ account.id }}</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">密碼</div>
+            <div class="password-container">
+              <div class="password-value">••••••••</div>
+              <button class="change-password-btn" onclick="openPasswordModal()">
+                修改密碼
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 修改密碼彈出框 -->
+    <div class="modal-overlay" id="passwordModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">修改密碼</h3>
+          <button class="close-btn" onclick="closePasswordModal()">
+            &times;
+          </button>
+        </div>
+
+        <form id="passwordForm" onsubmit="handlePasswordChange(event)">
+          <div class="form-group">
+            <label class="form-label" for="currentPassword">目前密碼</label>
+            <input
+              type="password"
+              id="currentPassword"
+              name="currentPassword"
+              class="form-input"
+              required
+              placeholder="請輸入目前密碼"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newPassword">新密碼</label>
+            <input
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              class="form-input"
+              required
+              placeholder="請輸入新密碼"
+              minlength="3"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">確認新密碼</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              class="form-input"
+              required
+              placeholder="請再次輸入新密碼"
+              minlength="3"
+            />
+          </div>
+
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closePasswordModal()"
+            >
+              取消
+            </button>
+            <button type="submit" class="btn btn-primary">確認修改</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // 處理密碼修改
+      function handlePasswordChange(event) {
+        event.preventDefault();
+
+        const currentPassword =
+          document.getElementById("currentPassword").value;
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        // 前端驗證
+        if (newPassword !== confirmPassword) {
+          showAlert("新密碼和確認密碼不一致，請重新輸入！", "error");
+          return;
+        }
+
+        if (newPassword.length < 3) {
+          showAlert("新密碼長度至少需要3個字符！", "error");
+          return;
+        }
+
+        // 顯示加載狀態
+        const submitBtn = document.querySelector(
+          '#passwordForm button[type="submit"]'
+        );
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "修改中...";
+        submitBtn.disabled = true;
+
+        // 發送請求到後端
+        fetch("/change-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data.success) {
+              showAlert(data.message, "success");
+              closePasswordModal();
+            } else {
+              showAlert(data.message, "error");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            if (error.message.includes("401")) {
+              showAlert("請重新登入", "error");
+              setTimeout(() => {
+                window.location.href = "/login";
+              }, 2000);
+            } else {
+              showAlert("發生錯誤，請稍後再試", "error");
+            }
+          })
+          .finally(() => {
+            // 恢復按鈕狀態
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          });
+      }
+
+      // 顯示提示訊息
+      function showAlert(message, type = "info") {
+        // 移除現有的提示框
+        const existingAlert = document.querySelector(".alert");
+        if (existingAlert) {
+          existingAlert.remove();
+        }
+
+        // 創建提示框
+        const alertDiv = document.createElement("div");
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 15px 20px;
+          border-radius: 8px;
+          color: white;
+          font-weight: 500;
+          z-index: 9999;
+          max-width: 400px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+          animation: slideInRight 0.3s ease-out;
+        `;
+
+        // 根據類型設置顏色
+        switch (type) {
+          case "success":
+            alertDiv.style.background = "#2ecc71";
+            break;
+          case "error":
+            alertDiv.style.background = "#e74c3c";
+            break;
+          case "warning":
+            alertDiv.style.background = "#f39c12";
+            break;
+          default:
+            alertDiv.style.background = "#3498db";
+        }
+
+        alertDiv.textContent = message;
+
+        // 添加關閉按鈕
+        const closeBtn = document.createElement("span");
+        closeBtn.innerHTML = "&times;";
+        closeBtn.style.cssText = `
+          float: right;
+          margin-left: 15px;
+          cursor: pointer;
+          font-size: 1.2em;
+          opacity: 0.8;
+        `;
+        closeBtn.onclick = () => alertDiv.remove();
+        alertDiv.appendChild(closeBtn);
+
+        // 添加到頁面
+        document.body.appendChild(alertDiv);
+
+        // 3秒後自動消失
+        setTimeout(() => {
+          if (alertDiv.parentNode) {
+            alertDiv.style.animation = "slideOutRight 0.3s ease-out";
+            setTimeout(() => alertDiv.remove(), 300);
+          }
+        }, 3000);
+      }
+
+      // 開啟修改密碼彈出框
+      function openPasswordModal() {
+        const modal = document.getElementById("passwordModal");
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+
+        setTimeout(() => {
+          document.getElementById("currentPassword").focus();
+        }, 300);
+      }
+
+      // 關閉修改密碼彈出框
+      function closePasswordModal() {
+        const modal = document.getElementById("passwordModal");
+        modal.classList.remove("active");
+        document.body.style.overflow = "auto";
+
+        // 清空表單
+        document.getElementById("passwordForm").reset();
+
+        // 重置驗證狀態
+        const inputs = modal.querySelectorAll("input");
+        inputs.forEach((input) => {
+          input.style.borderColor = "#e1e1e1";
+          input.setCustomValidity("");
+        });
+      }
+
+      // 點擊模態框背景關閉
+      document
+        .getElementById("passwordModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closePasswordModal();
+          }
+        });
+
+      // ESC鍵關閉模態框
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closePasswordModal();
+        }
+      });
+
+      // 表單驗證增強
+      document
+        .getElementById("confirmPassword")
+        .addEventListener("input", function () {
+          const newPassword = document.getElementById("newPassword").value;
+          const confirmPassword = this.value;
+
+          if (confirmPassword && newPassword !== confirmPassword) {
+            this.setCustomValidity("密碼不一致");
+            this.style.borderColor = "#e74c3c";
+          } else {
+            this.setCustomValidity("");
+            this.style.borderColor = "#e1e1e1";
+          }
+        });
+
+      document
+        .getElementById("newPassword")
+        .addEventListener("input", function () {
+          const confirmPassword = document.getElementById("confirmPassword");
+          if (confirmPassword.value) {
+            confirmPassword.dispatchEvent(new Event("input"));
+          }
+
+          // 檢查密碼長度
+          if (this.value.length > 0 && this.value.length < 3) {
+            this.setCustomValidity("密碼長度至少需要3個字符");
+            this.style.borderColor = "#e74c3c";
+          } else {
+            this.setCustomValidity("");
+            this.style.borderColor = "#e1e1e1";
+          }
+        });
+
+      // 添加動畫樣式
+      if (!document.querySelector("#alertStyles")) {
+        const style = document.createElement("style");
+        style.id = "alertStyles";
+        style.textContent = `
+          @keyframes slideInRight {
+            from {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+            to {
+              transform: translateX(0);
+              opacity: 1;
+            }
+          }
+          
+          @keyframes slideOutRight {
+            from {
+              transform: translateX(0);
+              opacity: 1;
+            }
+            to {
+              transform: translateX(100%);
+              opacity: 0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    </script>
+  </body>
+</html>
